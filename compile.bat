@@ -1,0 +1,1 @@
+emcc -o index.html src/main.c --shell-file html_template/base.html -s NO_EXIT_RUNTIME=1 -s "EXPORTED_RUNTIME_METHODS=['ccall','UTF8ToString']"

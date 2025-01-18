@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>embedconverter</title>
+    <style>
+      body {
+        margin: 0 15% auto;
+        /* background-color: rgb(26, 26, 26);
+        color: white; */
+        font-family: Helvetica, sans-serif;
+        font-weight: bold;
+        font-size: larger;
+      }
+      input,
+      textarea,
+      button {
+        padding: 1.5ch;
+      }
+      html {
+        box-sizing: border-box;
+      }
+      select {
+        padding: 1.5ch;
+        margin-bottom: 1ch;
+      }
+      option:hover,
+      option:checked {
+        background-color: cornflowerblue;
+        color: white;
+      }
+      select {
+        background-color: whitesmoke;
+      }
+      *,
+      *:before,
+      *:after {
+        box-sizing: inherit;
+      }
+      a {
+        text-transform: uppercase;
+        text-decoration: none;
+        font-weight: bold;
+        color: cornflowerblue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>
+      EMBEDCONVERTER<span style="font-size: large; font-weight: normal">
+        by
+        <a href="https://www.justinchappell.com" target="_blank">justin</a></span>
+    </h1>
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">Buy me a coffee :&#41;</a>
+    <hr>
+    <br>
+    <form id="form_inout">
+      <label for="input_type">Input</label>
+      <select id="input_type" name="inputs">
+        <option value="0">Hexadecimal</option>
+        <option value="1">Decimal</option>
+        <option value="3">Binary</option>
+      </select>
+      <label for="output_type">Desired Output</label>
+      <select id="output_type" name="outputs">
+        <option value="0">Hexadecimal</option>
+        <option value="1">Decimal</option>
+        <option value="3">Binary</option>
+      </select>
+      <input style="width: 100%" name="input" type="text" autocomplete="off" required />
+      <br />
+      <br />
+      <button style="width: 100%" type="submit">Convert</button>
+    </form>
+    <br />
+    <label>Output</label>
+    <textarea id="output" style="min-width: 100%" autocomplete="off"></textarea>
+    <script type="text/javascript">
+      const form = document.getElementById("form_inout");
+      const outputTextarea = document.getElementById("output");
+      form.addEventListener("submit", handleSubmit);
+
+      function handleSubmit(event) {
+          event.preventDefault();
+
+          const formData = new FormData(event.target);
+          const request = Object.fromEntries(formData.entries());
+
+          const input = request["input"];
+          const inputType = request["inputs"];
+          const outputType = request["outputs"];
+
+          // TODO: validate number conversions :)
+          const response = convertNumericTypes(Number(inputType), Number(outputType), input);
+
+          // FIX: this doesn't update the response buffer correctly...
+          // now that we are reading from wasm memory
+          outputTextarea.value = response.buffer;
+        };
+
+        function cloneResponse(ptr) {
+          const response = {
+            buffer: "",
+            status: 0,
+          };
+
+          const offset = ptr;
+
+          for (; ptr < offset + 1024; ptr++) {
+            const num = HEAPU8[ptr];
+            if (num === 0) {
+              break;
+            }
+
+            response.buffer += String.fromCharCode(num);
+          }
+
+          response.status = HEAPU32[ptr];
+
+          return response;
+        }
+
+        function convertNumericTypes(inputType, outputType, input) {
+          const response = _create_response();
+
+          _convert_numeric_types_js(response, inputType, outputType, input);
+          const output = cloneResponse(response);
+
+          _free_response(response);
+
+          return output;
+        }
+    </script>
+    {{{ SCRIPT }}}
+  </body>
+</html>
