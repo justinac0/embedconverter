@@ -112,7 +112,7 @@
             if (num === 0) {
               break;
             }
-            
+
             response.buffer += String.fromCharCode(num);
           }
 
@@ -126,7 +126,7 @@
 
           _convert_numeric_types_js(response, inputType, outputType, input);
           const output = cloneResponse(response);
-          
+
           _free_response(response);
 
           return output;

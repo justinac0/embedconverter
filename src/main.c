@@ -26,7 +26,7 @@ typedef enum NumericType
     NUMERIC_TYPES_LENGTH
 } NumericType;
 
-extern const char *EMSCRIPTEN_KEEPALIVE numeric_type_as_string(NumericType type)
+const char* numeric_type_as_string(NumericType type)
 {
     switch (type)
     {
@@ -69,6 +69,8 @@ void ResponseSetError(Response *resp, const char *message)
 
 Response convert_numeric_types(NumericType inputType, NumericType outputType, char *input)
 {
+    printf("input: %s\n", input);
+
     Response resp;
     memset(resp.buffer, 0, RESULT_BUFFER_SIZE);
 
@@ -85,6 +87,8 @@ Response convert_numeric_types(NumericType inputType, NumericType outputType, ch
 extern EMSCRIPTEN_KEEPALIVE Response* create_response()
 {
     Response *resp = (Response *)malloc(sizeof(Response));
+    if (!resp) return NULL;
+
     memset(resp->buffer, 0, RESULT_BUFFER_SIZE);
     resp->status = 0;
     return resp;

@@ -1270,7 +1270,6 @@ var wasmImports = {
 var wasmExports;
 createWasm();
 var ___wasm_call_ctors = createExportWrapper('__wasm_call_ctors', 0);
-var _numeric_type_as_string = Module['_numeric_type_as_string'] = createExportWrapper('numeric_type_as_string', 1);
 var _create_response = Module['_create_response'] = createExportWrapper('create_response', 0);
 var _free_response = Module['_free_response'] = createExportWrapper('free_response', 1);
 var _convert_numeric_types_js = Module['_convert_numeric_types_js'] = createExportWrapper('convert_numeric_types_js', 4);
